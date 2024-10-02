@@ -14,11 +14,17 @@ class ArticleListTile extends StatelessWidget {
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(article.description),
-      leading: article.urlToImage.isNotEmpty
-          ? Image.network(article.urlToImage, width: 100, fit: BoxFit.cover)
-          : null,
+      leading: article.urlToImage.isNotEmpty // Check if the image URL is valid
+          ? Image.network(
+        article.urlToImage,
+        width: 100,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(Icons.broken_image); // Handle invalid image URLs
+        },
+      )
+          : Icon(Icons.image_not_supported), // Placeholder if no image available
       onTap: () {
-        // Optionally: Handle on-tap actions like navigating to a detailed view
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
