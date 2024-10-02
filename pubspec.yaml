@@ -1,7 +1,7 @@
 name: flutter_news_app
 description: A simple Flutter news app that fetches articles from the NewsAPI.
 
-publish_to: 'none'  # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -11,13 +11,16 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.4  # Added the http dependency
-  cupertino_icons: ^1.0.2  # Cupertino icons for iOS style icons
+  http: ^0.13.4
+  sqflite: ^2.0.0+4
+  path: ^1.8.0
+  connectivity_plus: ^4.0.0
+  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0  # Lints for better coding practices
+  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true

@@ -19,4 +19,13 @@ class Article {
       urlToImage: json['urlToImage'] ?? '',
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'description': description,
+      'url': url,
+      'urlToImage': urlToImage,
+    };
+  }
 }
