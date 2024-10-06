@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../models/article.dart';
 
 class ArticleListTile extends StatelessWidget {
   final Article article;
-  final bool isBookmarked;
   final Function(Article) onBookmarkToggle;
 
   const ArticleListTile({
     Key? key,
     required this.article,
-    required this.isBookmarked,
     required this.onBookmarkToggle,
   }) : super(key: key);
 
@@ -31,13 +30,13 @@ class ArticleListTile extends StatelessWidget {
         },
       )
           : Icon(Icons.image_not_supported),
-      trailing: IconButton(
+      trailing: Obx(() => IconButton(
         icon: Icon(
-          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-          color: isBookmarked ? Colors.red : null,
+          article.isBookmarked.value ? Icons.bookmark : Icons.bookmark_border,
+          color: article.isBookmarked.value ? Colors.red : null,
         ),
         onPressed: () => onBookmarkToggle(article),
-      ),
+      )),
       onTap: () {
         showDialog(
           context: context,

@@ -1,17 +1,19 @@
+import 'package:get/get.dart';
+
 class Article {
   final String title;
   final String description;
   final String url;
   final String urlToImage;
-  bool isBookmarked; // New field to track if an article is bookmarked
+  RxBool isBookmarked; // Use RxBool for reactive state
 
   Article({
     required this.title,
     required this.description,
     required this.url,
     required this.urlToImage,
-    this.isBookmarked = false, // Default to false
-  });
+    bool isBookmarked = false, // Default to false
+  }) : isBookmarked = isBookmarked.obs; // Initialize as reactive
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
@@ -28,7 +30,7 @@ class Article {
       'description': description,
       'url': url,
       'urlToImage': urlToImage,
-      'isBookmarked': isBookmarked ? 1 : 0, // Convert boolean to integer
+      'isBookmarked': isBookmarked.value ? 1 : 0, // Convert boolean to integer
     };
   }
 }

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'controllers/NewsController.dart';
+
 import 'screens/news_screen.dart';
 
 void main() {
@@ -8,7 +11,10 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    // Initialize the NewsController
+    Get.put(NewsController());
+
+    return GetMaterialApp(
       title: 'News App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
