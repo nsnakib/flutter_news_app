@@ -3,8 +3,15 @@ import '../models/article.dart';
 
 class ArticleListTile extends StatelessWidget {
   final Article article;
+  final bool isBookmarked;
+  final Function(Article) onBookmarkToggle;
 
-  const ArticleListTile({Key? key, required this.article}) : super(key: key);
+  const ArticleListTile({
+    Key? key,
+    required this.article,
+    required this.isBookmarked,
+    required this.onBookmarkToggle,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +21,23 @@ class ArticleListTile extends StatelessWidget {
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(article.description),
-      leading: article.urlToImage.isNotEmpty // Check if the image URL is valid
+      leading: article.urlToImage.isNotEmpty
           ? Image.network(
         article.urlToImage,
         width: 100,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) {
-          return Icon(Icons.broken_image); // Handle invalid image URLs
+          return Icon(Icons.broken_image);
         },
       )
-          : Icon(Icons.image_not_supported), // Placeholder if no image available
+          : Icon(Icons.image_not_supported),
+      trailing: IconButton(
+        icon: Icon(
+          isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+          color: isBookmarked ? Colors.red : null,
+        ),
+        onPressed: () => onBookmarkToggle(article),
+      ),
       onTap: () {
         showDialog(
           context: context,
@@ -32,8 +46,7 @@ class ArticleListTile extends StatelessWidget {
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (article.urlToImage.isNotEmpty)
-                  Image.network(article.urlToImage),
+                if (article.urlToImage.isNotEmpty) Image.network(article.urlToImage),
                 SizedBox(height: 10),
                 Text(article.description),
               ],

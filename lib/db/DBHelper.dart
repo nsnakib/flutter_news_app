@@ -25,7 +25,16 @@ class DBHelper {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE articles(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, description TEXT, url TEXT, urlToImage TEXT)',
+          '''
+          CREATE TABLE articles(
+            id INTEGER PRIMARY KEY AUTOINCREMENT, 
+            title TEXT, 
+            description TEXT, 
+            url TEXT, 
+            urlToImage TEXT, 
+            isBookmarked INTEGER DEFAULT 0  -- New column for bookmark status
+          )
+          ''',
         );
       },
       version: 1,
@@ -41,6 +50,16 @@ class DBHelper {
     );
   }
 
+  Future<void> updateBookmark(Article article) async {
+    final db = await database;
+    await db.update(
+      'articles',
+      article.toMap(),
+      where: 'title = ?',
+      whereArgs: [article.title],
+    );
+  }
+
   Future<List<Article>> getArticles() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query('articles');
@@ -51,6 +70,26 @@ class DBHelper {
         description: maps[i]['description'],
         url: maps[i]['url'],
         urlToImage: maps[i]['urlToImage'],
+        isBookmarked: maps[i]['isBookmarked'] == 1, // Convert int to bool
+      );
+    });
+  }
+
+  Future<List<Article>> getBookmarkedArticles() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'articles',
+      where: 'isBookmarked = ?',
+      whereArgs: [1],
+    );
+
+    return List.generate(maps.length, (i) {
+      return Article(
+        title: maps[i]['title'],
+        description: maps[i]['description'],
+        url: maps[i]['url'],
+        urlToImage: maps[i]['urlToImage'],
+        isBookmarked: maps[i]['isBookmarked'] == 1, // Convert int to bool
       );
     });
   }

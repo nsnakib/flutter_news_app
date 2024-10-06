@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../BookmarkedArticlesScreen.dart';
 import '../services/news_service.dart';
 import '../models/article.dart';
 import '../widgets/article_list_tile.dart';
+
 
 class NewsScreen extends StatefulWidget {
   @override
@@ -10,22 +12,23 @@ class NewsScreen extends StatefulWidget {
 
 class _NewsScreenState extends State<NewsScreen> {
   late Future<List<Article>> news;
-  List<Article> allArticles = []; // Stores all articles
-  List<Article> filteredArticles = []; // Stores filtered articles
+  List<Article> allArticles = [];
+  List<Article> filteredArticles = [];
   String searchQuery = "";
+  List<Article> bookmarkedArticles = [];
 
   @override
   void initState() {
     super.initState();
     news = NewsService().fetchNews();
-    _loadArticles(); // Fetch articles
+    _loadArticles();
   }
 
   Future<void> _loadArticles() async {
     final fetchedArticles = await NewsService().fetchNews();
     setState(() {
       allArticles = fetchedArticles;
-      filteredArticles = fetchedArticles; // Start with all articles shown
+      filteredArticles = fetchedArticles;
     });
   }
 
@@ -33,7 +36,7 @@ class _NewsScreenState extends State<NewsScreen> {
     setState(() {
       news = NewsService().fetchNews();
     });
-    await _loadArticles(); // Reload articles after refresh
+    await _loadArticles();
   }
 
   void _filterArticles(String query) {
@@ -46,12 +49,33 @@ class _NewsScreenState extends State<NewsScreen> {
     });
   }
 
+  void _toggleBookmark(Article article) {
+    setState(() {
+      if (bookmarkedArticles.contains(article)) {
+        bookmarkedArticles.remove(article);
+      } else {
+        bookmarkedArticles.add(article);
+      }
+    });
+  }
+
+  void _viewBookmarks() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BookmarkedArticlesScreen(
+          bookmarkedArticles: bookmarkedArticles,
+          onBookmarkToggle: _toggleBookmark,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
-          onChanged: _filterArticles, // Call filter logic as the user types
+          onChanged: _filterArticles,
           decoration: InputDecoration(
             hintText: 'Search news...',
             border: InputBorder.none,
@@ -59,6 +83,12 @@ class _NewsScreenState extends State<NewsScreen> {
           ),
           style: TextStyle(color: Colors.white, fontSize: 18),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.bookmark),
+            onPressed: _viewBookmarks, // Opens bookmarked articles screen
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: _refreshNews,
@@ -73,12 +103,16 @@ class _NewsScreenState extends State<NewsScreen> {
               return Center(child: Text('No news available'));
             } else {
               return ListView.builder(
-                itemCount: filteredArticles.length, // Show filtered articles
+                itemCount: filteredArticles.length,
                 itemBuilder: (context, index) {
                   final article = filteredArticles[index];
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                    child: ArticleListTile(article: article),
+                    child: ArticleListTile(
+                      article: article,
+                      isBookmarked: bookmarkedArticles.contains(article),
+                      onBookmarkToggle: _toggleBookmark,
+                    ),
                   );
                 },
               );
