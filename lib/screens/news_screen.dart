@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../BookmarkedArticlesScreen.dart';
 import '../controllers/NewsController.dart';
 import '../widgets/article_list_tile.dart';
 
@@ -25,7 +23,7 @@ class NewsScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.bookmark),
-            onPressed: () => Get.to(() => BookmarkedArticlesScreen()), // Navigate using GetX
+            onPressed: () => Get.toNamed('/bookmarked'),
           ),
         ],
       ),
@@ -44,6 +42,9 @@ class NewsScreen extends StatelessWidget {
                 child: ArticleListTile(
                   article: article,
                   onBookmarkToggle: newsController.toggleBookmark,
+                  onTap: () {
+                    Get.toNamed('/articleDetails', arguments: article);
+                  },
                 ),
               );
             },

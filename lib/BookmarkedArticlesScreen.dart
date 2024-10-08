@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import '../controllers/NewsController.dart';
 import '../widgets/article_list_tile.dart';
-import 'controllers/NewsController.dart';
 
 class BookmarkedArticlesScreen extends StatelessWidget {
   final NewsController newsController = Get.find();
@@ -31,6 +30,9 @@ class BookmarkedArticlesScreen extends StatelessWidget {
               child: ArticleListTile(
                 article: article,
                 onBookmarkToggle: newsController.toggleBookmark,
+                onTap: () {
+                  Get.toNamed('/bookmarked/articleDetails', arguments: article);
+                },
               ),
             );
           },

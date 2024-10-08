@@ -5,11 +5,13 @@ import '../models/article.dart';
 class ArticleListTile extends StatelessWidget {
   final Article article;
   final Function(Article) onBookmarkToggle;
+  final VoidCallback onTap;
 
   const ArticleListTile({
     Key? key,
     required this.article,
     required this.onBookmarkToggle,
+    required this.onTap,
   }) : super(key: key);
 
   @override
@@ -37,28 +39,7 @@ class ArticleListTile extends StatelessWidget {
         ),
         onPressed: () => onBookmarkToggle(article),
       )),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text(article.title),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (article.urlToImage.isNotEmpty) Image.network(article.urlToImage),
-                SizedBox(height: 10),
-                Text(article.description),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Close'),
-              ),
-            ],
-          ),
-        );
-      },
+      onTap: onTap,
     );
   }
 }
